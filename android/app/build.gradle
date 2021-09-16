@@ -1,5 +1,13 @@
 apply plugin: "com.android.application"
 
+// react-native-config START
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+// react-native-config FINISH
+
+// Vector icons START
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+// Vector icons FINISH
+
 import com.android.build.OutputFile
 
 /**

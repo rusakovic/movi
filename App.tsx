@@ -19,20 +19,15 @@ import {
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import store, {persistor} from './redux/store';
-
-const Navigator: React.FC = () => {
-  return (
-    <View style={styles.sectionContainer}>
-      <Text>Hello</Text>
-    </View>
-  );
-};
+import {SearchScreen} from './screens';
 
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Navigator />
+        <SafeAreaView style={{flex: 1}}>
+          <SearchScreen />
+        </SafeAreaView>
       </PersistGate>
     </Provider>
   );
