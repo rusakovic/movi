@@ -20,6 +20,8 @@ import styled from '../../constants/styled';
 import {searchMovieRequested} from './redux/actions';
 import Icon from 'react-native-vector-icons/Feather';
 import {searchMovieResultSelector} from './redux/selectors';
+import {favoriteMovieToggleRequested} from '../FavoritesScreen/redux/actions';
+import {FavoriteMovieToggleRequestedAction} from '../FavoritesScreen/redux/types';
 
 const SearchScreen: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -46,6 +48,10 @@ const SearchScreen: React.FunctionComponent = () => {
 
   const onClearSearchInputHandler = () => {
     setSearchText('');
+  };
+
+  const onFavoriteToggle = (id: FavoriteMovieToggleRequestedAction['id']) => {
+    dispatch(favoriteMovieToggleRequested(id));
   };
 
   return (
@@ -83,10 +89,17 @@ const SearchScreen: React.FunctionComponent = () => {
       <HorizontalDivider marginVertical={5} />
       <SafeAreaView style={styles.searchResultContainer}>
         <FlatList
-          data={moviesDataResult}
+          data={Object.values(moviesDataResult)}
           keyExtractor={movie => movie.id}
           renderItem={({
-            item: {title, overview, release_date, vote_average, poster_path},
+            item: {
+              id,
+              title,
+              overview,
+              release_date,
+              vote_average,
+              poster_path,
+            },
           }) => (
             <View
               style={{
@@ -95,11 +108,13 @@ const SearchScreen: React.FunctionComponent = () => {
                 borderBottomColor: styled.colors.grey5opacity,
               }}>
               <MoviePreview
+                id={id}
                 title={title}
                 overview={overview}
                 year={release_date}
                 vote={vote_average}
                 posterUrl={poster_path}
+                onFavoriteToggle={onFavoriteToggle}
               />
             </View>
           )}

@@ -18,9 +18,13 @@ export type MovieDetailsType = {
   vote_count: number;
 };
 
+export type MoviesCollection = {
+  [key: number]: MovieDetailsType;
+};
+
 export type SearchMovieDataType = {
   page: number;
-  results: MovieDetailsType[];
+  results: MoviesCollection;
   total_pages: number;
   total_results: number;
 };

@@ -3,6 +3,7 @@ import {Image, StyleSheet, View} from 'react-native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 import {THE_MOVIE_500PX_POSTER_URL} from '../../../constants/defaultUrls';
+import {FavoriteMovieToggleRequestedAction} from '../../../screens/FavoritesScreen/redux/types';
 import {searchMovieResultSelector} from '../../../screens/SearchScreen/redux/selectors';
 import {MovieDetailsType} from '../../../screens/SearchScreen/redux/types';
 import ButtonWithShadowSmall from '../../atoms/Buttons/ButtonWithShadowSmall';
@@ -38,19 +39,23 @@ const styles = StyleSheet.create({
 });
 
 interface MoviePreviewProps {
+  id: MovieDetailsType['id'];
   title: MovieDetailsType['title'];
   overview: MovieDetailsType['overview'];
   year: MovieDetailsType['release_date'];
   vote: MovieDetailsType['vote_average'];
   posterUrl: MovieDetailsType['poster_path'];
+  onFavoriteToggle: (id: FavoriteMovieToggleRequestedAction['id']) => void;
 }
 
 const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
+  id,
   title,
   overview,
   year,
   vote,
   posterUrl,
+  onFavoriteToggle,
 }) => {
   const extractedYear = year.slice(0, 4);
   const convertedVote = vote.toString();
@@ -103,7 +108,7 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
           <ButtonWithShadowSmall
             isIcon
             iconName="star"
-            onPress={() => null}
+            onPress={() => onFavoriteToggle(id)}
             isDisabled={false}
             iconSize={15}
             percentageWidth={15}

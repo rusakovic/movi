@@ -4,6 +4,7 @@ import {searchMovieFailed, searchMovieSucceeded} from './actions';
 import {Action, ActionType, SearchMovieRequestedAction} from './types';
 import axios, {AxiosResponse} from 'axios';
 import {THE_MOVIE_DB_API_URL} from '../../../constants/defaultUrls';
+import {searchMoviesDataConverter} from './utils';
 
 export function* SearchMovieResultRequestedSaga({
   searchInput,
@@ -13,7 +14,8 @@ export function* SearchMovieResultRequestedSaga({
     console.log('🚀 ~ file: sagas.ts ~ line 13 ~ searchUrl', searchUrl);
     const response = (yield call(axios.get, searchUrl)) as AxiosResponse;
 
-    yield put(searchMovieSucceeded(response.data));
+    const moviesWithIDs = yield call(searchMoviesDataConverter, response.data);
+    yield put(searchMovieSucceeded(moviesWithIDs));
   } catch (error) {
     yield call(console.error, error);
     const errorMessage = `Movies not fetched => ${error.message}`;
