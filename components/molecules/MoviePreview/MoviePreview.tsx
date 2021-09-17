@@ -1,10 +1,9 @@
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {THE_MOVIE_500PX_POSTER_URL} from '../../../constants/defaultUrls';
-import {FavoriteMovieToggleRequestedAction} from '../../../screens/FavoritesScreen/redux/types';
-import {searchMovieResultSelector} from '../../../screens/SearchScreen/redux/selectors';
+import {favoriteMovieToggleRequested} from '../../../screens/FavoritiesScreen/redux/actions';
 import {MovieDetailsType} from '../../../screens/SearchScreen/redux/types';
 import ButtonWithShadowSmall from '../../atoms/Buttons/ButtonWithShadowSmall';
 import DefaultText from '../../atoms/Text/DefaultText/DefaultText';
@@ -45,7 +44,7 @@ interface MoviePreviewProps {
   year: MovieDetailsType['release_date'];
   vote: MovieDetailsType['vote_average'];
   posterUrl: MovieDetailsType['poster_path'];
-  onFavoriteToggle: (id: FavoriteMovieToggleRequestedAction['id']) => void;
+  isFavorite: boolean;
 }
 
 const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
@@ -55,14 +54,19 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
   year,
   vote,
   posterUrl,
-  onFavoriteToggle,
+  isFavorite,
 }) => {
   const extractedYear = year.slice(0, 4);
   const convertedVote = vote.toString();
   const voteWithZeros =
     convertedVote.length === 1 ? `${convertedVote}.0` : convertedVote;
-
+  const dispatch = useDispatch();
   const posterUri = `${THE_MOVIE_500PX_POSTER_URL}${posterUrl}`;
+
+  const onFavoriteToggle = () => {
+    console.log('fired');
+    dispatch(favoriteMovieToggleRequested(id));
+  };
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.posterWrapper}>
@@ -98,7 +102,7 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
         <View style={styles.buttonsWrapper}>
           <ButtonWithShadowSmall
             isIcon
-            iconName="eye"
+            iconName="eye-outline"
             onPress={() => null}
             isDisabled={false}
             iconSize={15}
@@ -107,8 +111,8 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
           <View style={styles.containerSpace} />
           <ButtonWithShadowSmall
             isIcon
-            iconName="star"
-            onPress={() => onFavoriteToggle(id)}
+            iconName={isFavorite ? 'star' : 'star-outline'}
+            onPress={onFavoriteToggle}
             isDisabled={false}
             iconSize={15}
             percentageWidth={15}

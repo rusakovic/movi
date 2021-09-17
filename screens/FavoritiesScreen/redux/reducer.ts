@@ -13,14 +13,17 @@ const FavoriteMoviesReducer = (
     case ActionType.FavoriteMovieToggleSucceeded:
       const movieId = action.id;
       const movieData = action.movieData;
-
+      console.log('state.favoritesMovies', state.favoritesMovies);
       const updatedFavorites = addRemovedFavoriteMovie(
         state.favoritesMovies,
         movieId,
         movieData,
       );
+      console.log(
+        '🚀 ~ file: reducer.ts ~ line 22 ~ updatedFavorites',
+        updatedFavorites,
+      );
       return {
-        ...state,
         favoritesMovies: updatedFavorites,
       };
 

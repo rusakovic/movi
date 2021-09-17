@@ -11,7 +11,6 @@ export function* SearchMovieResultRequestedSaga({
 }: SearchMovieRequestedAction): Generator {
   try {
     const searchUrl = `${THE_MOVIE_DB_API_URL}?api_key=${Config.MOVIE_DB_API_KEY}&language=en-US&page=1&query=${searchInput}`;
-    console.log('🚀 ~ file: sagas.ts ~ line 13 ~ searchUrl', searchUrl);
     const response = (yield call(axios.get, searchUrl)) as AxiosResponse;
 
     const moviesWithIDs = yield call(searchMoviesDataConverter, response.data);

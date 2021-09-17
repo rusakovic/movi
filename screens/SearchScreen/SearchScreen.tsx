@@ -20,13 +20,25 @@ import styled from '../../constants/styled';
 import {searchMovieRequested} from './redux/actions';
 import Icon from 'react-native-vector-icons/Feather';
 import {searchMovieResultSelector} from './redux/selectors';
-import {favoriteMovieToggleRequested} from '../FavoritesScreen/redux/actions';
-import {FavoriteMovieToggleRequestedAction} from '../FavoritesScreen/redux/types';
+import {favoriteMoviesSelector} from '../FavoritiesScreen/redux/selectors';
+import omit from 'lodash/omit';
 
 const SearchScreen: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const searchedMoviesData = useSelector(searchMovieResultSelector);
-  const moviesDataResult = searchedMoviesData?.data?.results || [];
+  const favoriteMovies = useSelector(favoriteMoviesSelector);
+
+  const favoriteMoviesIds = Object.keys(favoriteMovies);
+  const moviesDataResult = searchedMoviesData?.data?.results || {};
+
+  const removeFavoritesFromSearchResult = omit(
+    moviesDataResult,
+    favoriteMoviesIds,
+  );
+  const pushedFavoriteMoviesArray = [
+    ...Object.values(favoriteMovies),
+    ...Object.values(removeFavoritesFromSearchResult),
+  ];
 
   const [searchText, setSearchText] = useState('');
 
@@ -48,10 +60,6 @@ const SearchScreen: React.FunctionComponent = () => {
 
   const onClearSearchInputHandler = () => {
     setSearchText('');
-  };
-
-  const onFavoriteToggle = (id: FavoriteMovieToggleRequestedAction['id']) => {
-    dispatch(favoriteMovieToggleRequested(id));
   };
 
   return (
@@ -80,7 +88,7 @@ const SearchScreen: React.FunctionComponent = () => {
         </View>
         <ButtonWithShadowSmall
           isIcon
-          iconName="eye"
+          iconName="eye-outline"
           onPress={() => null}
           isDisabled={false}
           percentageWidth={15}
@@ -89,7 +97,7 @@ const SearchScreen: React.FunctionComponent = () => {
       <HorizontalDivider marginVertical={5} />
       <SafeAreaView style={styles.searchResultContainer}>
         <FlatList
-          data={Object.values(moviesDataResult)}
+          data={pushedFavoriteMoviesArray}
           keyExtractor={movie => movie.id}
           renderItem={({
             item: {
@@ -114,7 +122,7 @@ const SearchScreen: React.FunctionComponent = () => {
                 year={release_date}
                 vote={vote_average}
                 posterUrl={poster_path}
-                onFavoriteToggle={onFavoriteToggle}
+                isFavorite={favoriteMoviesIds.includes(id.toString())}
               />
             </View>
           )}

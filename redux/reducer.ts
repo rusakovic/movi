@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import favoriteMoviesReducer from '../screens/FavoritesScreen/redux/reducer';
+import favoriteMoviesReducer from '../screens/FavoritiesScreen/redux/reducer';
 import searchMovieResult from '../screens/SearchScreen/redux/reducer';
 
 // REDUX store

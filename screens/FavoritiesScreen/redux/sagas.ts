@@ -7,7 +7,6 @@ import {Action, ActionType, FavoriteMovieToggleRequestedAction} from './types';
 export function* FavoriteMovieToggleSaga({
   id,
 }: FavoriteMovieToggleRequestedAction): Generator {
-  console.log('🚀 ~ file: sagas.ts ~ line 10 ~ id', id);
   const moviesData = (yield select(
     searchMovieResultDataResultsSelector,
   )) as SearchMovieDataType['results'];

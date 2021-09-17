@@ -10,16 +10,15 @@ export const addRemovedFavoriteMovie = (
   movieId: FavoriteMovieToggleRequestedAction['id'],
   movieData: MovieDetailsType,
 ) => {
-  let favoritesMoviesStateClone = cloneDeep(favoritesMovies);
+  const favoritesMoviesStateClone = cloneDeep(favoritesMovies);
 
   if (favoritesMoviesStateClone.hasOwnProperty(movieId)) {
     delete favoritesMoviesStateClone[movieId];
+    return favoritesMoviesStateClone;
   } else {
-    favoritesMoviesStateClone = {
+    return {
       ...favoritesMoviesStateClone,
       [movieId]: movieData,
     };
   }
-
-  return favoritesMoviesStateClone;
 };
