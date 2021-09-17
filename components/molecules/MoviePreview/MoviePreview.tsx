@@ -4,6 +4,7 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
 import {THE_MOVIE_500PX_POSTER_URL} from '../../../constants/defaultUrls';
 import {favoriteMovieToggleRequested} from '../../../screens/FavoritiesScreen/redux/actions';
+import {hiddenMovieToggleRequested} from '../../../screens/HiddenMoviesScreen/redux/actions';
 import {MovieDetailsType} from '../../../screens/SearchScreen/redux/types';
 import ButtonWithShadowSmall from '../../atoms/Buttons/ButtonWithShadowSmall';
 import DefaultText from '../../atoms/Text/DefaultText/DefaultText';
@@ -45,6 +46,7 @@ interface MoviePreviewProps {
   vote: MovieDetailsType['vote_average'];
   posterUrl: MovieDetailsType['poster_path'];
   isFavorite: boolean;
+  isHidden: boolean;
 }
 
 const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
@@ -55,6 +57,7 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
   vote,
   posterUrl,
   isFavorite,
+  isHidden,
 }) => {
   const extractedYear = year.slice(0, 4);
   const convertedVote = vote.toString();
@@ -64,9 +67,13 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
   const posterUri = `${THE_MOVIE_500PX_POSTER_URL}${posterUrl}`;
 
   const onFavoriteToggle = () => {
-    console.log('fired');
     dispatch(favoriteMovieToggleRequested(id));
   };
+
+  const onHiddenToggle = () => {
+    dispatch(hiddenMovieToggleRequested(id));
+  };
+
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.posterWrapper}>
@@ -102,8 +109,8 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
         <View style={styles.buttonsWrapper}>
           <ButtonWithShadowSmall
             isIcon
-            iconName="eye-outline"
-            onPress={() => null}
+            iconName={isHidden ? 'md-eye-off-outline' : 'eye-outline'}
+            onPress={onHiddenToggle}
             isDisabled={false}
             iconSize={15}
             percentageWidth={15}

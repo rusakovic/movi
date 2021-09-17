@@ -22,29 +22,47 @@ import Icon from 'react-native-vector-icons/Feather';
 import {searchMovieResultSelector} from './redux/selectors';
 import {favoriteMoviesSelector} from '../FavoritiesScreen/redux/selectors';
 import omit from 'lodash/omit';
+import {
+  hiddenMoviesSelector,
+  isHiddenMoviesGlobalSelector,
+} from '../HiddenMoviesScreen/redux/selectors';
+import {hiddenMovieToggleGlobal} from '../HiddenMoviesScreen/redux/actions';
 
 const SearchScreen: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const searchedMoviesData = useSelector(searchMovieResultSelector);
-  const favoriteMovies = useSelector(favoriteMoviesSelector);
 
+  const favoriteMovies = useSelector(favoriteMoviesSelector);
   const favoriteMoviesIds = Object.keys(favoriteMovies);
+
+  const isHiddenMoviesGlobal = useSelector(isHiddenMoviesGlobalSelector);
+  const hiddenMoviesIds = useSelector(hiddenMoviesSelector);
+
   const moviesDataResult = searchedMoviesData?.data?.results || {};
 
+  // Avoid duplicates in search result and favorites list
   const removeFavoritesFromSearchResult = omit(
     moviesDataResult,
     favoriteMoviesIds,
   );
+
+  // Show favorite movies first, then search result
   const pushedFavoriteMoviesArray = [
     ...Object.values(favoriteMovies),
     ...Object.values(removeFavoritesFromSearchResult),
   ];
 
+  const filterHiddenMovies = pushedFavoriteMoviesArray.filter(
+    movie => !hiddenMoviesIds.includes(movie.id),
+  );
+
+  const withoutHiddenMovies = isHiddenMoviesGlobal
+    ? filterHiddenMovies
+    : pushedFavoriteMoviesArray;
+
   const [searchText, setSearchText] = useState('');
 
   const isSearchTextFilled = searchText.length;
-
-  const [moviesData, setMoviesData] = useState(moviesDataResult);
 
   // Delay with a search request. Not search, if less than 3 symbols
   useEffect(() => {
@@ -60,6 +78,10 @@ const SearchScreen: React.FunctionComponent = () => {
 
   const onClearSearchInputHandler = () => {
     setSearchText('');
+  };
+
+  const hideMoviesGlobalHandler = () => {
+    dispatch(hiddenMovieToggleGlobal());
   };
 
   return (
@@ -88,8 +110,8 @@ const SearchScreen: React.FunctionComponent = () => {
         </View>
         <ButtonWithShadowSmall
           isIcon
-          iconName="eye-outline"
-          onPress={() => null}
+          iconName={isHiddenMoviesGlobal ? 'md-eye-off-outline' : 'eye-outline'}
+          onPress={hideMoviesGlobalHandler}
           isDisabled={false}
           percentageWidth={15}
         />
@@ -97,7 +119,7 @@ const SearchScreen: React.FunctionComponent = () => {
       <HorizontalDivider marginVertical={5} />
       <SafeAreaView style={styles.searchResultContainer}>
         <FlatList
-          data={pushedFavoriteMoviesArray}
+          data={withoutHiddenMovies}
           keyExtractor={movie => movie.id}
           renderItem={({
             item: {
@@ -123,6 +145,7 @@ const SearchScreen: React.FunctionComponent = () => {
                 vote={vote_average}
                 posterUrl={poster_path}
                 isFavorite={favoriteMoviesIds.includes(id.toString())}
+                isHidden={hiddenMoviesIds.includes(id)}
               />
             </View>
           )}

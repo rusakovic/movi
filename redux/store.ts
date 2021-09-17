@@ -11,7 +11,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const reduxMiddlewares = [sagaMiddleware];
 // Persistence logic
-const whitelist = ['favoriteMoviesReducer'];
+const whitelist = ['favoriteMoviesReducer', 'hiddenMovies'];
 
 const persistConfig = {
   key: 'root',
