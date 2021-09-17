@@ -27,6 +27,7 @@ import {
   isHiddenMoviesGlobalSelector,
 } from '../HiddenMoviesScreen/redux/selectors';
 import {hiddenMovieToggleGlobal} from '../HiddenMoviesScreen/redux/actions';
+import NetInfo from '@react-native-community/netinfo';
 
 const SearchScreen: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,19 @@ const SearchScreen: React.FunctionComponent = () => {
     moviesDataResult,
     favoriteMoviesIds,
   );
+
+  // Check internet availability
+  const [isOffline, setOfflineStatus] = useState(false);
+  console.log('🚀 ~ file: SearchScreen.tsx ~ line 52 ~ isOffline', isOffline);
+
+  useEffect(() => {
+    const removeNetInfoSubscription = NetInfo.addEventListener(state => {
+      const offline = !(state.isConnected && state.isInternetReachable);
+      setOfflineStatus(offline);
+    });
+
+    return () => removeNetInfoSubscription();
+  }, []);
 
   // Show favorite movies first, then search result
   const pushedFavoriteMoviesArray = [

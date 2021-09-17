@@ -1,5 +1,6 @@
-import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, Modal, Pressable, StyleSheet, View} from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
 import {THE_MOVIE_500PX_POSTER_URL} from '../../../constants/defaultUrls';
@@ -66,6 +67,7 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
   const dispatch = useDispatch();
   const posterUri = `${THE_MOVIE_500PX_POSTER_URL}${posterUrl}`;
 
+  const [isPreviewOpened, setIsPreviewOpened] = useState(false);
   const onFavoriteToggle = () => {
     dispatch(favoriteMovieToggleRequested(id));
   };
@@ -74,16 +76,33 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
     dispatch(hiddenMovieToggleRequested(id));
   };
 
+  const showPreviewPosterToggle = () => {
+    setIsPreviewOpened(prevState => !prevState);
+  };
+
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.posterWrapper}>
-        <Image
-          source={{
-            uri: posterUri,
-          }}
-          style={styles.poster}
-          resizeMode="contain"
-        />
+        <Pressable onPress={showPreviewPosterToggle}>
+          <Image
+            source={{
+              uri: posterUri,
+            }}
+            style={styles.poster}
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        <Modal visible={isPreviewOpened} transparent={true}>
+          <ImageViewer
+            imageUrls={[{url: posterUri}]}
+            onCancel={showPreviewPosterToggle}
+            enableSwipeDown
+            renderIndicator={() => <></>}
+            backgroundColor="rgba(0,0,0,0.8)"
+            swipeDownThreshold={50}
+          />
+        </Modal>
       </View>
 
       <View style={styles.descriptionWrapper}>
