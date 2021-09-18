@@ -3,30 +3,30 @@ import {
   FlatList,
   Pressable,
   SafeAreaView,
-  StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-import ButtonWithShadowSmall from '../../components/atoms/Buttons/ButtonWithShadowSmall';
-import ContainerSpace from '../../components/atoms/Containers/ContainerSpace';
-import HorizontalDivider from '../../components/atoms/Dividers/Horizontal/HorizontalDivider';
-import {MoviePreview} from '../../components/molecules';
-import styled from '../../constants/styled';
+
 import {searchMovieRequested} from './redux/actions';
 import Icon from 'react-native-vector-icons/Feather';
 import {searchMovieResultSelector} from './redux/selectors';
-import {favoriteMoviesSelector} from '../FavoritiesScreen/redux/selectors';
 import omit from 'lodash/omit';
+
+import ButtonWithShadowSmall from '@components/atoms/Buttons/ButtonWithShadowSmall';
+import ContainerSpace from '@components/atoms/Containers/ContainerSpace';
+import HorizontalDivider from '@components/atoms/Dividers/Horizontal/HorizontalDivider';
+import {MoviePreview} from '@components/molecules';
+import styled from '@constants/styled';
+import {hiddenMovieToggleGlobal} from '@screens/HiddenMoviesScreen/redux/actions';
 import {
-  hiddenMoviesSelector,
   isHiddenMoviesGlobalSelector,
-} from '../HiddenMoviesScreen/redux/selectors';
-import {hiddenMovieToggleGlobal} from '../HiddenMoviesScreen/redux/actions';
+  hiddenMoviesSelector,
+} from '@screens/HiddenMoviesScreen/redux/selectors';
+import {favoriteMoviesSelector} from '@screens/FavoritiesScreen/redux/selectors';
+import {MovieDetailsType} from './redux/types';
+import {styles} from './styles';
 
 interface SearchScreenProps {
   isScrollable: boolean;
@@ -50,7 +50,7 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
   const removeFavoritesFromSearchResult = omit(
     moviesDataResult,
     favoriteMoviesIds,
-  );
+  ) as MovieDetailsType[];
 
   // Show favorite movies first, then search result
   const pushedFavoriteMoviesArray = [
@@ -59,7 +59,7 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
   ];
 
   const filterHiddenMovies = pushedFavoriteMoviesArray.filter(
-    movie => !hiddenMoviesIds.includes(movie.id),
+    movie => movie && !hiddenMoviesIds.includes(movie.id),
   );
 
   const withoutHiddenMovies = isHiddenMoviesGlobal
@@ -70,14 +70,21 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
 
   const isSearchTextFilled = searchText.length;
 
+  // Scroll to top of the list during new search result
+  const flatListRef = React.useRef<FlatList<MovieDetailsType>>(null);
+  const searchToTop = () => {
+    flatListRef.current &&
+      flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  };
+
   // Delay with a search request. Not search, if less than 3 symbols
   useEffect(() => {
     if (searchText.length <= 3) return;
 
-    const timerId = setTimeout(
-      () => dispatch(searchMovieRequested(searchText)),
-      2000,
-    );
+    const timerId = setTimeout(() => {
+      dispatch(searchMovieRequested(searchText));
+      searchToTop();
+    }, 1000);
 
     return (): void => clearTimeout(timerId);
   }, [searchText, dispatch]);
@@ -89,6 +96,12 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
   const hideMoviesGlobalHandler = () => {
     dispatch(hiddenMovieToggleGlobal());
   };
+
+  // Empty search result text
+  const isSearchResult = pushedFavoriteMoviesArray.length;
+  const emptySearchResultText = searchText.length
+    ? 'Movies not found'
+    : 'No added movies to favorites';
 
   return (
     <View style={styles.mainContainer}>
@@ -106,8 +119,8 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
               onPress={onClearSearchInputHandler}>
               <Icon
                 name="x-circle"
-                size={24}
-                color={styled.colors.grey50opacity}
+                size={20}
+                color={styled.colors.grey30opacity}
               />
             </Pressable>
           ) : (
@@ -124,73 +137,48 @@ const SearchScreen: React.FunctionComponent<SearchScreenProps> = ({
       </View>
       <HorizontalDivider marginVertical={5} />
       <SafeAreaView style={styles.searchResultContainer}>
-        <FlatList
-          data={withoutHiddenMovies}
-          scrollEnabled={isScrollable}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={movie => movie.id}
-          renderItem={({
-            item: {
-              id,
-              title,
-              overview,
-              release_date,
-              vote_average,
-              poster_path,
-            },
-          }) => (
-            <View
-              style={{
-                paddingVertical: wp(5),
-                borderBottomWidth: 1,
-                borderBottomColor: styled.colors.grey5opacity,
-              }}>
-              <MoviePreview
-                id={id}
-                title={title}
-                overview={overview}
-                year={release_date}
-                vote={vote_average}
-                posterUrl={poster_path}
-                isFavorite={favoriteMoviesIds.includes(id.toString())}
-                isHidden={hiddenMoviesIds.includes(id)}
-              />
-            </View>
-          )}
-          ListFooterComponent={<ContainerSpace mtM marginVertical />}
-        />
+        {isSearchResult ? (
+          <FlatList
+            data={withoutHiddenMovies}
+            ref={flatListRef}
+            scrollEnabled={isScrollable}
+            keyboardShouldPersistTaps="handled"
+            keyExtractor={movie =>
+              movie?.id.toString() || Math.random().toString()
+            }
+            renderItem={({
+              item: {
+                id,
+                title,
+                overview,
+                release_date,
+                vote_average,
+                poster_path,
+              },
+            }) => (
+              <View style={styles.moviePreviewWrapper}>
+                <MoviePreview
+                  id={id}
+                  title={title}
+                  overview={overview}
+                  year={release_date || '----'}
+                  vote={vote_average}
+                  posterUrl={poster_path}
+                  isFavorite={favoriteMoviesIds.includes(id.toString())}
+                  isHidden={hiddenMoviesIds.includes(id)}
+                />
+              </View>
+            )}
+            ListFooterComponent={<ContainerSpace mtM marginVertical />}
+          />
+        ) : (
+          <View style={styles.emptyResultWrapper}>
+            <Text>{emptySearchResultText}</Text>
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {flex: 1},
-  searchWrapper: {
-    marginHorizontal: wp(4),
-    marginVertical: wp(2),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  searchInput: {
-    borderColor: styled.colors.grey20opacity,
-    borderWidth: 1,
-    width: '80%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: hp(5.5),
-  },
-  searchField: {
-    width: '85%',
-  },
-  crossButtonWrapper: {
-    height: '100%',
-    width: '15%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchResultContainer: {marginHorizontal: wp(3)},
-});
 
 export default SearchScreen;

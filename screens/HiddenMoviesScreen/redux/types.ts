@@ -1,4 +1,4 @@
-import {MovieDetailsType} from '../../SearchScreen/redux/types';
+import {MovieDetailsType} from '@screens/SearchScreen/redux/types';
 
 export enum ActionType {
   // HIDDEN MOVIE TOGGLE

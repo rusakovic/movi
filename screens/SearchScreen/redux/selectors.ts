@@ -1,4 +1,4 @@
-import {RootState} from '../../../redux/reducer';
+import {RootState} from '@redux/reducer';
 import {SearchMovieDataType, SearchMovieResultInitialStateType} from './types';
 
 export const searchMovieResultSelector = ({
@@ -6,7 +6,5 @@ export const searchMovieResultSelector = ({
 }: RootState): SearchMovieResultInitialStateType => searchMovieResult;
 
 export const searchMovieResultDataResultsSelector = ({
-  searchMovieResult: {
-    data: {results},
-  },
-}: RootState): SearchMovieDataType['results'] => results;
+  searchMovieResult: {data},
+}: RootState): SearchMovieDataType['results'] => data?.results || {};

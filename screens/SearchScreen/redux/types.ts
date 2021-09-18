@@ -32,7 +32,7 @@ export type SearchMovieDataType = {
 export type SearchMovieResultInitialStateType = {
   isLoading: boolean;
   isFailed: boolean;
-  data: SearchMovieDataType;
+  data: SearchMovieDataType | null;
   errorMessage: null | string;
 };
 
@@ -44,7 +44,7 @@ export type SearchMovieRequestedAction = {
 
 export type SearchMovieSucceededAction = {
   type: ActionType.SearchMovieSucceeded;
-  data: null | {};
+  data: SearchMovieDataType;
 };
 
 export type SearchMovieFailedAction = {

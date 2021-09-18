@@ -1,4 +1,4 @@
-import {RootState} from '../../../redux/reducer';
+import {RootState} from '@redux/reducer';
 import {FavoriteMoviesInitialStateType} from './types';
 
 export const favoriteMoviesSelector = ({

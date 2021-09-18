@@ -1,4 +1,4 @@
-import {FavoriteMovieToggleRequestedAction} from '../../FavoritiesScreen/redux/types';
+import {FavoriteMovieToggleRequestedAction} from '@screens/FavoritiesScreen/redux/types';
 import {ActionType, Action} from './types';
 
 // HIDDEN MOVIE TOGGLE

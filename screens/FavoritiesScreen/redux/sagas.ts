@@ -1,6 +1,7 @@
 import {call, put, select, takeLatest} from 'redux-saga/effects';
-import {searchMovieResultDataResultsSelector} from '../../SearchScreen/redux/selectors';
-import {SearchMovieDataType} from '../../SearchScreen/redux/types';
+import {searchMovieResultDataResultsSelector} from '@screens/SearchScreen/redux/selectors';
+import {SearchMovieDataType} from '@screens/SearchScreen/redux/types';
+
 import {favoriteMovieToggleSucceeded} from './actions';
 import {Action, ActionType, FavoriteMovieToggleRequestedAction} from './types';
 

@@ -1,8 +1,8 @@
+import styled from '@constants/styled';
 import React, {FC} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import styled from '../../../../constants/styled';
 
 interface HorizontalDividerProps {
   width?: number;

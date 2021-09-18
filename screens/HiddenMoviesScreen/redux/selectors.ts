@@ -1,4 +1,4 @@
-import {RootState} from '../../../redux/reducer';
+import {RootState} from '@redux/reducer';
 import {HiddenMoviesInitialStateType} from './types';
 
 export const hiddenMoviesSelector = ({

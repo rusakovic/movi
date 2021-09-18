@@ -2,7 +2,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import {
   MoviesCollection,
   MovieDetailsType,
-} from '../../SearchScreen/redux/types';
+} from '@screens/SearchScreen/redux/types';
+
 import {FavoriteMovieToggleRequestedAction} from './types';
 
 export const addRemovedFavoriteMovie = (

@@ -1,7 +1,7 @@
 import {
-  MovieDetailsType,
   MoviesCollection,
-} from '../../SearchScreen/redux/types';
+  MovieDetailsType,
+} from '@screens/SearchScreen/redux/types';
 
 export enum ActionType {
   // FAVORITE MOVIE TOGGLE

@@ -1,12 +1,13 @@
 import {BlurView} from '@react-native-community/blur';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from 'react-native';
-import DefaultText from '../../components/atoms/Text/DefaultText/DefaultText';
-import styled from '../../constants/styled';
-import SearchScreen from '../SearchScreen';
+import {ActivityIndicator, SafeAreaView, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import NetInfo from '@react-native-community/netinfo';
-import ContainerSpace from '../../components/atoms/Containers/ContainerSpace';
+import ContainerSpace from '@components/atoms/Containers/ContainerSpace';
+import {SearchScreen} from '@screens';
+import styled from '@constants/styled';
+import DefaultText from '@components/atoms/Text/DefaultText/DefaultText';
+import {styles} from './styles';
 
 const Navigator: React.FunctionComponent = () => {
   // Check internet availability
@@ -22,33 +23,17 @@ const Navigator: React.FunctionComponent = () => {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}>
+    <SafeAreaView style={styles.safeAreaWrapper}>
       <SearchScreen isScrollable={!isOffline} />
       {isOffline ? (
         <>
           <BlurView
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-            }}
+            style={styles.blurredWrapper}
             blurType="dark"
             blurAmount={10}
-            overlayColor="rgba(0,0,0,0.8)"
+            overlayColor={styled.colors.grey80opacity}
           />
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-            }}>
+          <View style={styles.noInternetTextWrapper}>
             <Icon name="wifi-off" size={35} color={styled.colors.white.white} />
             <ContainerSpace mtXXS />
             <DefaultText fontColor={styled.colors.white.white} fontFamilyLight>
@@ -61,7 +46,7 @@ const Navigator: React.FunctionComponent = () => {
       ) : (
         <></>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

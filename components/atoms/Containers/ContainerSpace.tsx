@@ -1,10 +1,7 @@
+import styled from '@constants/styled';
 import React from 'react';
 import {StyleSheet, View, ViewStyle} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import styled from '../../../constants/styled';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 interface ContainerCenterProps {
   style?: ViewStyle;

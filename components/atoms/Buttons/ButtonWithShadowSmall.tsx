@@ -1,3 +1,4 @@
+import styled from '@constants/styled';
 import React, {CSSProperties, FC} from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import {
@@ -5,8 +6,6 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import styled from '../../../constants/styled';
 import DefaultText from '../Text/DefaultText/DefaultText';
 
 interface ButtonWithShadowSmallProps {

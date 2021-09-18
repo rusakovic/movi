@@ -1,14 +1,14 @@
+import ButtonWithShadowSmall from '@components/atoms/Buttons/ButtonWithShadowSmall';
+import DefaultText from '@components/atoms/Text/DefaultText/DefaultText';
+import {THE_MOVIE_500PX_POSTER_URL} from '@constants/defaultUrls';
 import React, {useState} from 'react';
 import {Image, Modal, Pressable, StyleSheet, View} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
-import {THE_MOVIE_500PX_POSTER_URL} from '../../../constants/defaultUrls';
-import {favoriteMovieToggleRequested} from '../../../screens/FavoritiesScreen/redux/actions';
-import {hiddenMovieToggleRequested} from '../../../screens/HiddenMoviesScreen/redux/actions';
-import {MovieDetailsType} from '../../../screens/SearchScreen/redux/types';
-import ButtonWithShadowSmall from '../../atoms/Buttons/ButtonWithShadowSmall';
-import DefaultText from '../../atoms/Text/DefaultText/DefaultText';
+import {favoriteMovieToggleRequested} from '@screens/FavoritiesScreen/redux/actions';
+import {hiddenMovieToggleRequested} from '@screens/HiddenMoviesScreen/redux/actions';
+import {MovieDetailsType} from '@screens/SearchScreen/redux/types';
 
 const styles = StyleSheet.create({
   mainWrapper: {flexDirection: 'row', flex: 1},
@@ -101,8 +101,9 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
             renderIndicator={() => <></>}
             backgroundColor="rgba(0,0,0,0.8)"
             saveToLocalByLongPress={false}
-            swipeDownThreshold={50}
             onClick={showPreviewPosterToggle}
+            swipeDownThreshold={80}
+            useNativeDriver
           />
         </Modal>
       </View>
