@@ -11,7 +11,6 @@ import ContainerSpace from '../../components/atoms/Containers/ContainerSpace';
 const Navigator: React.FunctionComponent = () => {
   // Check internet availability
   const [isOffline, setOfflineStatus] = useState(false);
-  console.log('🚀 ~ file: SearchScreen.tsx ~ line 52 ~ isOffline', isOffline);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
@@ -27,34 +26,38 @@ const Navigator: React.FunctionComponent = () => {
       style={{
         flex: 1,
       }}>
-      <SearchScreen />
+      <SearchScreen isScrollable={!isOffline} />
       {isOffline ? (
-        <BlurView
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            justifyContent: 'center',
-          }}
-          blurType="dark"
-          blurAmount={10}
-          reducedTransparencyFallbackColor="white"
-          overlayColor="rgba(0,0,0,0.8)">
+        <>
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            }}
+            blurType="dark"
+            blurAmount={10}
+            overlayColor="rgba(0,0,0,0.8)"
+          />
           <View
             style={{
               alignItems: 'center',
+              justifyContent: 'center',
+              position: 'absolute',
+              height: '100%',
+              width: '100%',
             }}>
             <Icon name="wifi-off" size={35} color={styled.colors.white.white} />
             <ContainerSpace mtXXS />
             <DefaultText fontColor={styled.colors.white.white} fontFamilyLight>
               Please, check internet connection
             </DefaultText>
-            <ContainerSpace mtL />
-            <ActivityIndicator size="large" />
+            <ContainerSpace mtXXS />
+            <ActivityIndicator />
           </View>
-        </BlurView>
+        </>
       ) : (
         <></>
       )}

@@ -100,29 +100,33 @@ const MoviePreview: React.FunctionComponent<MoviePreviewProps> = ({
             enableSwipeDown
             renderIndicator={() => <></>}
             backgroundColor="rgba(0,0,0,0.8)"
+            saveToLocalByLongPress={false}
             swipeDownThreshold={50}
+            onClick={showPreviewPosterToggle}
           />
         </Modal>
       </View>
 
       <View style={styles.descriptionWrapper}>
-        <View style={styles.titleWrapper}>
-          <DefaultText
-            style={{width: '80%'}}
-            s
-            fitText={false}
-            fontFamilyMedium>
-            {title}
-          </DefaultText>
-          <DefaultText style={{width: '20%'}} isTextAlignCenter s>
-            {voteWithZeros}
-          </DefaultText>
-        </View>
+        <Pressable onPress={showPreviewPosterToggle}>
+          <View style={styles.titleWrapper}>
+            <DefaultText
+              style={{width: '80%'}}
+              s
+              fitText={false}
+              fontFamilyMedium>
+              {title}
+            </DefaultText>
+            <DefaultText style={{width: '20%'}} isTextAlignCenter s>
+              {voteWithZeros}
+            </DefaultText>
+          </View>
 
-        <DefaultText xs>{extractedYear}</DefaultText>
-        <DefaultText xxs2 numberOfLines={3} fitText={false}>
-          {overview}
-        </DefaultText>
+          <DefaultText xs>{extractedYear}</DefaultText>
+          <DefaultText xxs2 numberOfLines={3} fitText={false}>
+            {overview}
+          </DefaultText>
+        </Pressable>
 
         {/* BUTTONS */}
         <View style={styles.buttonsWrapper}>
